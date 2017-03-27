@@ -7,6 +7,7 @@ package it.polito.tdp.alien;
 
 
 import java.net.URL;
+import java.util.*;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -16,6 +17,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class AlienController {
+	
+	private ParolaTraduzione dizionario = new ParolaTraduzione();
+	private boolean parolaValida = false;
 	
     @FXML
     private ResourceBundle resources;
@@ -43,12 +47,49 @@ public class AlienController {
     
     @FXML
     void doTranslate(ActionEvent event) {
-    	    	
+    	
+    	for(int i=0; i<txtWord.getText().length(); i++)
+    		if((txtWord.getText().toLowerCase().charAt(i) >= 'a' && txtWord.getText().toLowerCase().charAt(i) <= 'z')
+    			|| txtWord.getText().toLowerCase().charAt(i) == ' ' || txtWord.getText().toLowerCase().charAt(i) == '?')
+    			
+    			parolaValida = true;
+    			
+    		else {
+    			txtResult.setText("Carattere non valido! Inserire una parola");
+    			return;
+    		}
+    	
+    	if(parolaValida==true){
+    	
+	    	if(txtWord.getText().contains(" ")) {
+	    		
+	    		String array[] = txtWord.getText().split(" ");
+	    		
+	    		if(array.length > 2) {
+	    			txtResult.setText("Inserire al massimo due parole!");
+	    			return;
+	    		}
+	    			
+	    		String parolaAliena = array[0].toLowerCase();
+	    		String traduzione = array[1].toLowerCase();
+	    		
+	    		dizionario.putParola(parolaAliena, traduzione);
+	    		txtResult.setText(traduzione);
+	    		txtWord.clear();	
+	    	}
+	    	else {
+	    		
+	    		txtResult.setText(dizionario.translate(txtWord.getText().toLowerCase())); 
+	    		txtWord.clear();
+	    	}
+    	}
     }
     
     
     @FXML
     void doReset(ActionEvent event) {
+    	
+    	txtResult.clear();
 
     }
     
